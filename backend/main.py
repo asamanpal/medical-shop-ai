@@ -3,14 +3,20 @@ from pathlib import Path
 import cv2
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+from backend.medicine_extractor import (
+    extract_medicine_lines,
+    parse_medicine_line
 )
+
 
 app = FastAPI(title="Medical Shop AI")
 
 UPLOAD_DIR = Path("data/raw")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+pytesseract.pytesseract.tesseract_cmd = (
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+)
 
 
 @app.get("/")
@@ -38,8 +44,20 @@ async def upload_prescription(file: UploadFile = File(...)):
 
     text = pytesseract.image_to_string(gray)
 
+    medicine_lines = extract_medicine_lines(text)
+
+    medicines = []
+
+    for line in medicine_lines:
+        parsed = parse_medicine_line(line)
+
+        if parsed:
+            medicines.append(parsed)
+
     return {
         "message": "Prescription processed successfully",
         "filename": file.filename,
-        "extracted_text": text
+        "extracted_text": text,
+        "medicine_lines": medicine_lines,
+        "medicines": medicines
     }
