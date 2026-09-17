@@ -34,3 +34,7 @@ tmp/
 
 # Private / real patient data
 data/private/
+
+# Test / raw prescription images
+data/raw/*
+data/processed/*
