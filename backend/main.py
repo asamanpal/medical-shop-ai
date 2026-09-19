@@ -3,6 +3,7 @@ from pathlib import Path
 import cv2
 import pytesseract
 from backend.medicine_search import search_medicines
+from backend.text_normalizer import normalize_ocr_text
 
 from backend.medicine_extractor import (
     extract_medicine_lines,
@@ -53,7 +54,11 @@ async def upload_prescription(file: UploadFile = File(...)):
         parsed = parse_medicine_line(line)
 
         if parsed:
-            query = parsed["medicine_name"]
+            normalized_name = normalize_ocr_text(parsed["medicine_name"])
+
+            parsed["normalized_name"] = normalized_name
+
+            query = normalized_name
 
             if parsed["strength"]:
                 query = f"{query} {parsed['strength']}"
