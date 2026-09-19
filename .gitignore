@@ -38,3 +38,7 @@ data/private/
 # Test / raw prescription images
 data/raw/*
 data/processed/*
+
+# External / processed datasets
+data/external/*
+data/processed/*

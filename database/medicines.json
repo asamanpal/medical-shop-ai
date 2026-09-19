@@ -1,0 +1,18 @@
+{
+  "medicines": [
+    {
+      "medicine_name": "Betaloc",
+      "generic_name": "Metoprolol",
+      "strength": "100 mg",
+      "form": "tablet",
+      "uses": [
+        "High blood pressure",
+        "Heart-related conditions"
+      ],
+      "storage": {
+        "shelf": "S01",
+        "location": "Cardiology Section"
+      }
+    }
+  ]
+}

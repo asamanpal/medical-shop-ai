@@ -34,4 +34,47 @@ def test_parse_medicine_line():
     assert result["medicine_name"] == "Betaloc"
     assert result["strength"] == "100mg"
     assert result["dose"] == "1 tab"
-    assert result["frequency"] == "BID"    
+    assert result["frequency"] == "BID"   
+
+def test_parse_medicine_name_only():
+    from backend.medicine_extractor import parse_medicine_line
+
+    result = parse_medicine_line("Betaloc")
+
+    assert result["medicine_name"] == "Betaloc"
+    assert result["strength"] is None
+    assert result["dose"] is None
+    assert result["frequency"] is None
+    assert result["quantity"] is None
+
+def test_parse_medicine_with_tablet_prefix():
+    from backend.medicine_extractor import parse_medicine_line
+
+    result = parse_medicine_line("Tab Betaloc 100 mg")
+
+    assert result["medicine_name"] == "Betaloc"
+    assert result["strength"] == "100 mg"
+    assert result["dose"] is None
+    assert result["frequency"] is None
+
+def test_parse_medicine_with_quantity():
+    from backend.medicine_extractor import parse_medicine_line
+
+    result = parse_medicine_line("Betaloc 100mg - 10 tablets")
+
+    assert result["medicine_name"] == "Betaloc"
+    assert result["strength"] == "100mg"
+    assert result["quantity"] == "10 tablets"
+    assert result["dose"] is None
+    assert result["frequency"] is None
+
+def test_parse_medicine_quantity_without_dash():
+    from backend.medicine_extractor import parse_medicine_line
+
+    result = parse_medicine_line("Betaloc 100mg 10 tablets")
+
+    assert result["medicine_name"] == "Betaloc"
+    assert result["strength"] == "100mg"
+    assert result["quantity"] == "10 tablets"
+    assert result["dose"] is None
+    assert result["frequency"] is None
