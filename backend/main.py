@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 from pathlib import Path
 import cv2
 import pytesseract
+from backend.medicine_search import search_medicines
 
 from backend.medicine_extractor import (
     extract_medicine_lines,
@@ -52,6 +53,15 @@ async def upload_prescription(file: UploadFile = File(...)):
         parsed = parse_medicine_line(line)
 
         if parsed:
+            query = parsed["medicine_name"]
+
+            if parsed["strength"]:
+                query = f"{query} {parsed['strength']}"
+
+            matches = search_medicines(query)
+
+            parsed["matches"] = matches
+
             medicines.append(parsed)
 
     return {

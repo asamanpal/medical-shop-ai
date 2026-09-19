@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -20,4 +21,9 @@ def search_medicines(query: str, limit: int = 10):
         .str.contains(query, na=False)
     ].head(limit)
 
-    return matches.to_dict(orient="records")
+    # Convert Pandas NaN values into JSON null
+    records = json.loads(
+        matches.to_json(orient="records")
+    )
+
+    return records
